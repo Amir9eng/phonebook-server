@@ -4,6 +4,9 @@ const app = express();
 
 app.use(express.json());
 
+const generateId = () =>
+  persons.length > 0 ? Math.random().toString(36).substring(2, 7) : 1;
+
 let persons = [
   {
     name: "Ada Lovelace",
@@ -52,8 +55,22 @@ app.delete("/api/persons/:id", (request, response) => {
   const person = persons.filter((person) => {
     return person.id !== id;
   });
-  console.log(person);
   response.json(person).status(204).end();
+});
+
+app.post("/api/persons", (request, response) => {
+  const newContact = request.body;
+  newContact.id = generateId();
+  if (!newContact.name || !newContact.number)
+    return response.status(400).send(`name || number not supplied`);
+  const contactExist = persons.some(
+    (person) => person.name === newContact.name
+  );
+  if (contactExist)
+    return response.status(400).send(`${newContact.name} already exist`);
+
+  persons = persons.concat(newContact);
+  response.send(newContact);
 });
 
 app.get("/info", (request, response) => {

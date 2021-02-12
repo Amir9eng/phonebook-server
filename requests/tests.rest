@@ -10,6 +10,12 @@ GET {{endpoint}}/9
 
 ###
 POST {{endpoint}}
+Content-Type: application/json
+
+{
+    "name": "abdulsamadu",
+    "number": "345212434"
+}
 
 ###
 DELETE {{endpoint}}/3
