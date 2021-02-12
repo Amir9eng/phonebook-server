@@ -47,9 +47,14 @@ app.get("/api/persons/:id", (request, response) => {
   return;
 });
 
-app.post("/api/persons/", (request, response) => {
-  const 
-})
+app.delete("/api/persons/:id", (request, response) => {
+  const id = Number(request.params.id);
+  const person = persons.filter((person) => {
+    return person.id !== id;
+  });
+  console.log(person);
+  response.json(person).status(204).end();
+});
 
 app.get("/info", (request, response) => {
   const date = new Date().toLocaleString();

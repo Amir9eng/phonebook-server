@@ -10,3 +10,6 @@ GET {{endpoint}}/9
 
 ###
 POST {{endpoint}}
+
+###
+DELETE {{endpoint}}/3
