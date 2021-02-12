@@ -1,0 +1,12 @@
+@endpoint =  http://localhost:3003/api/persons
+
+
+
+GET {{endpoint}}
+
+###
+GET {{endpoint}}/9
+
+
+###
+POST {{endpoint}}
