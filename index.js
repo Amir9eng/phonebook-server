@@ -1,13 +1,22 @@
 const { request, response } = require("express");
 const express = require("express");
+const morgan = require("morgan");
 const app = express();
 
 app.use(express.json());
+app.use(morgan("tiny"));
+
+app.disable("x-powered by");
 
 const generateId = () =>
   persons.length > 0 ? Math.random().toString(36).substring(2, 7) : 1;
 
 let persons = [
+  {
+    name: "Gordon Levitt",
+    number: "45-88-9343892",
+    id: 1,
+  },
   {
     name: "Ada Lovelace",
     number: "39-44-5323523",

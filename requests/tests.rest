@@ -13,7 +13,7 @@ POST {{endpoint}}
 Content-Type: application/json
 
 {
-    "name": "abdulsamadu",
+    "name": "abdulsamad",
     "number": "345212434"
 }
 
