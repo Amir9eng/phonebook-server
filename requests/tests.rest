@@ -1,0 +1,21 @@
+@endpoint =  http://localhost:3003/api/persons
+
+
+
+GET {{endpoint}}
+
+###
+GET {{endpoint}}/3
+
+
+###
+POST {{endpoint}}
+Content-Type: application/json
+
+{
+    "name": "abdulsamad",
+    "number": "345212434"
+}
+
+###
+DELETE {{endpoint}}/3
