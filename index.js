@@ -1,10 +1,14 @@
 const { request, response } = require("express");
 const express = require("express");
+const cors = require("cors");
 const morgan = require("morgan");
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 app.use(morgan("tiny"));
+
+app.use(express.static("build"));
 
 app.disable("x-powered by");
 
@@ -38,7 +42,7 @@ let persons = [
     id: 5,
   },
   {
-    name: "name",
+    name: "naruto",
     number: "222736237676236",
     id: 7,
   },
@@ -97,6 +101,6 @@ app.get("/info", (request, response) => {
   );
 });
 
-const PORT = 3003;
+const PORT = process.env.PORT || 3003;
 app.listen(PORT);
 console.log(`Server running on port ${PORT}`);
