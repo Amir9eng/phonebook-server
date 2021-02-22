@@ -1,19 +1,19 @@
-const { request, response } = require("express");
-const express = require("express");
-const cors = require("cors");
-const morgan = require("morgan");
-const app = express();
+const express = require("express")
+const cors = require("cors")
+const morgan = require("morgan")
+const app = express()
+require("dotenv").config()
 
-app.use(express.json());
-app.use(cors());
-app.use(morgan("tiny"));
+app.use(express.json())
+app.use(cors())
+app.use(morgan("tiny"))
 
-app.use(express.static("build"));
+app.use(express.static("build"))
 
-app.disable("x-powered by");
+app.disable("x-powered by")
 
 const generateId = () =>
-  persons.length > 0 ? Math.random().toString(36).substring(2, 7) : 1;
+  persons.length > 0 ? Math.random().toString(36).substring(2, 7) : 1
 
 let persons = [
   {
@@ -46,50 +46,48 @@ let persons = [
     number: "222736237676236",
     id: 7,
   },
-];
+]
 
 app.get("/api/persons", (request, response) => {
-  response.json(persons);
-});
+  response.json(persons)
+})
 
 app.get("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const person = persons.find((person) => person.id === id);
+  const id = Number(request.params.id)
+  const person = persons.find((person) => person.id === id)
   if (person) {
-    response.json(person);
+    response.json(person)
   } else {
-    response.status(404).end();
+    response.status(404).end()
   }
-  return;
-});
+  return
+})
 
 app.delete("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
+  const id = Number(request.params.id)
   const person = persons.filter((person) => {
-    return person.id !== id;
-  });
-  response.json(person).status(204).end();
-});
+    return person.id !== id
+  })
+  response.json(person).status(204).end()
+})
 
 app.post("/api/persons", (request, response) => {
-  const newContact = request.body;
-  newContact.id = generateId();
+  const newContact = request.body
+  newContact.id = generateId()
   if (!newContact.name || !newContact.number)
-    return response.status(400).send(`name || number not supplied`);
-  const contactExist = persons.some(
-    (person) => person.name === newContact.name
-  );
+    return response.status(400).send(`name || number not supplied`)
+  const contactExist = persons.some((person) => person.name === newContact.name)
   if (contactExist)
-    return response.status(400).send(`${newContact.name} already exist`);
+    return response.status(400).send(`${newContact.name} already exist`)
 
-  persons = persons.concat(newContact);
-  response.send(newContact);
-});
+  persons = persons.concat(newContact)
+  response.send(newContact)
+})
 
 app.get("/info", (request, response) => {
-  const date = new Date().toLocaleString();
-  const created = new Date(Date.now());
-  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const date = new Date().toLocaleString()
+  const created = new Date(Date.now())
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
   response.send(
     ` <div>
@@ -98,9 +96,9 @@ app.get("/info", (request, response) => {
       
           ${timeZone} ${date} ${created} 
       </div>`
-  );
-});
+  )
+})
 
-const PORT = process.env.PORT || 3003;
-app.listen(PORT);
-console.log(`Server running on port ${PORT}`);
+const PORT = process.env.PORT
+app.listen(PORT)
+console.log(`Server running on port ${PORT}`)
