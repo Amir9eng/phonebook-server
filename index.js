@@ -1,8 +1,10 @@
+require("dotenv").config()
+
 const express = require("express")
 const cors = require("cors")
 const morgan = require("morgan")
 const app = express()
-require("dotenv").config()
+const Person = require("./models/person")
 
 app.use(express.json())
 app.use(cors())
@@ -49,7 +51,9 @@ let persons = [
 ]
 
 app.get("/api/persons", (request, response) => {
-  response.json(persons)
+  Person.find({}).then((persons) => {
+    response.json(persons)
+  })
 })
 
 app.get("/api/persons/:id", (request, response) => {
@@ -63,14 +67,6 @@ app.get("/api/persons/:id", (request, response) => {
   return
 })
 
-app.delete("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id)
-  const person = persons.filter((person) => {
-    return person.id !== id
-  })
-  response.json(person).status(204).end()
-})
-
 app.post("/api/persons", (request, response) => {
   const newContact = request.body
   newContact.id = generateId()
@@ -81,7 +77,7 @@ app.post("/api/persons", (request, response) => {
     return response.status(400).send(`${newContact.name} already exist`)
 
   persons = persons.concat(newContact)
-  response.send(newContact)
+  response.status(201).send(newContact)
 })
 
 app.get("/info", (request, response) => {
@@ -97,6 +93,13 @@ app.get("/info", (request, response) => {
           ${timeZone} ${date} ${created} 
       </div>`
   )
+})
+app.delete("/api/persons/:id", (request, response) => {
+  const id = Number(request.params.id)
+  const person = persons.filter((person) => {
+    return person.id !== id
+  })
+  response.json(person).status(204).end()
 })
 
 const PORT = process.env.PORT
