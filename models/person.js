@@ -1,10 +1,5 @@
 const mongoose = require("mongoose")
 
-if (process.argv.length < 3) {
-  console.log("please provide the password")
-  process.exit(2)
-}
-
 const url = process.env.DB_url
 
 mongoose

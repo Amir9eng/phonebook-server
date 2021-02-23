@@ -5,10 +5,16 @@ const cors = require("cors")
 const morgan = require("morgan")
 const app = express()
 const Person = require("./models/person")
+const bodyParser = require("body-parser")
 
 app.use(express.json())
+app.use(bodyParser.json)
 app.use(cors())
-app.use(morgan("tiny"))
+morgan.token("body", (req, res) => JSON.stringify(req.body))
+
+app.use(
+  morgan(":method :url :status :res[content-length] - :response-time ms :body")
+)
 
 app.use(express.static("build"))
 
@@ -72,12 +78,9 @@ app.post("/api/persons", (request, response) => {
   newContact.id = generateId()
   if (!newContact.name || !newContact.number)
     return response.status(400).send(`name || number not supplied`)
-  const contactExist = persons.some((person) => person.name === newContact.name)
-  if (contactExist)
-    return response.status(400).send(`${newContact.name} already exist`)
 
   persons = persons.concat(newContact)
-  response.status(201).send(newContact)
+  response.status(201).json(newContact)
 })
 
 app.get("/info", (request, response) => {
