@@ -5,7 +5,7 @@
 GET {{endpoint}}
 
 ###
-GET {{endpoint}}/10
+GET {{endpoint}}/6
 
 
 ###
