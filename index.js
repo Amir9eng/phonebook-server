@@ -98,11 +98,9 @@ app.get("/info", (request, response) => {
   )
 })
 app.delete("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id)
-  const person = persons.filter((person) => {
-    return person.id !== id
+  Person.findByIdAndRemove(request.id.params).then((result) => {
+    request.status(204).end()
   })
-  response.json(person).status(204).end()
 })
 
 const PORT = process.env.PORT

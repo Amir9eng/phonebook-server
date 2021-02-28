@@ -20,3 +20,9 @@ mongoose.connection.close()
 process.exit(1)
 })
 }
+
+const id = Number(request.params.id)
+const person = persons.filter((person) => {
+return person.id !== id
+})
+response.json(person).status(204).end()
