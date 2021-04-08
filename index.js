@@ -56,10 +56,12 @@ let persons = [
   },
 ]
 
-app.get("/api/persons", (request, response) => {
-  Person.find({}).then((persons) => {
-    response.json(persons)
-  })
+app.get("/api/persons", (request, response, next) => {
+  Person.find({})
+    .then((persons) => {
+      response.json(persons)
+    })
+    .catch(next)
 })
 
 app.get("/api/persons/:id", (request, response) => {
@@ -73,14 +75,35 @@ app.get("/api/persons/:id", (request, response) => {
   return
 })
 
-app.post("/api/persons", (request, response) => {
+app.delete("/api/persons/:id", async (request, response, next) => {
+  const id = request.params.id
+  try {
+    await Person.findByIdAndDelete({ _id, id })
+    response.status(204).end()
+  } catch (error) {
+    next(error)
+  }
+})
+
+app.post("/api/persons", async (request, response, next) => {
   const newContact = request.body
   newContact.id = generateId()
   if (!newContact.name || !newContact.number)
     return response.status(400).send(`name || number not supplied`)
+  try {
+    const nameExist = await Person.findOne({ name: newContact.name })
+    const numberExist = await Person.findOne({ number: newContact.number })
+    if (nameExist && numberExist)
+      return response.status(409).json({ error: "duplicate entry" })
 
-  persons = persons.concat(newContact)
-  response.status(201).json(newContact)
+    const newPerson = await new Person({
+      name: newContact.name,
+      number: newContact.number,
+    }).save()
+    response.status(201).json(newPerson)
+  } catch (error) {
+    console.log(error)
+  }
 })
 
 app.get("/info", (request, response) => {
@@ -97,11 +120,38 @@ app.get("/info", (request, response) => {
       </div>`
   )
 })
-app.delete("/api/persons/:id", (request, response) => {
-  Person.findByIdAndRemove(request.id.params).then((result) => {
-    request.status(204).end()
-  })
+app.put("api/person/:id", async (request, response, next) => {
+  const body = request.body
+  const person = {
+    name = body.name,
+    number= body.number
+  }
+  if(!body.name  && !body.number)
+  return response.status(400).json({error: '"name" or "number" is required'})
+  try{
+    Person.findByIdAndUpdate(request.params.id, person, {new: true})
+    response.json(person)
+  } catch(err) {
+    next(err)
+  } 
 })
+
+const unknownEndPoint = (request, response) => {
+  response.status(404).send({ error: "unknown endpoint" })
+}
+app.use(unknownEndPoint)
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" })
+  }
+
+  next(error)
+}
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT)

@@ -26,3 +26,5 @@ const person = persons.filter((person) => {
 return person.id !== id
 })
 response.json(person).status(204).end()
+
+persons = persons.concat(newContact)
